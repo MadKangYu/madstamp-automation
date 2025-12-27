@@ -1,106 +1,112 @@
-# Madstamp Automation
+# MadStamp Automation
 
-**도장 이미지 자동 제작 및 고객 전달 시스템**
+한글 도장 및 폰트 자동 생성 시스템
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Proprietary-red.svg)]()
+---
 
-## 개요
-
-Madstamp Automation은 고객이 이메일로 보낸 도장 제작 요청을 자동으로 처리하는 시스템입니다. AI 기반 이미지 분석으로 제작 가능 여부를 판단하고, Lovart AI를 통해 고품질 도장 이미지를 생성한 후, 벡터 파일(EPS/AI)로 변환하여 고객에게 전달합니다.
-
-## 주요 기능
-
-- **이메일 자동 모니터링**: Gmail MCP를 통한 실시간 이메일 수신 감지
-- **AI 이미지 분석**: OpenRouter Grok-4.1-fast를 활용한 제작 가능 여부 자동 판단
-- **OCR 텍스트 추출**: OCR.space API를 통한 이미지 내 텍스트 인식
-- **자동 이미지 생성**: Lovart AI 브라우저 자동화 (Playwright)
-- **벡터 변환**: PNG → EPS/AI 형식 자동 변환
-- **자동 이메일 발송**: 완성된 결과물 고객 전달
-
-## 기술 스택
-
-| 구성요소 | 기술 |
-|---------|------|
-| 백엔드 | Python 3.11+, FastAPI |
-| 데이터베이스 | Supabase (PostgreSQL) |
-| 브라우저 자동화 | Playwright |
-| AI 분석 | OpenRouter (Grok-4.1-fast) |
-| OCR | OCR.space API |
-| 이미지 생성 | Lovart AI |
-| 벡터 변환 | Potrace, Inkscape |
-| 이메일 | Gmail MCP |
-
-## 프로젝트 구조
+## 📁 프로젝트 구조
 
 ```
 madstamp-automation/
-├── app/                    # 핵심 애플리케이션 로직
-│   ├── main.py             # FastAPI 진입점
-│   ├── core/               # 설정, 로깅
-│   ├── services/           # 비즈니스 로직
-│   ├── models/             # 데이터 모델
-│   ├── apis/               # 외부 API 클라이언트
-│   └── jobs/               # 백그라운드 작업
-├── db/                     # 데이터베이스 스키마
-├── docs/                   # 문서
-├── scripts/                # 유틸리티 스크립트
-└── tests/                  # 테스트
+├── stamp-generator/          # 도장 생성기
+│   ├── circle/              # 원형 도장
+│   ├── square/              # 정사각형 도장
+│   └── templates/           # 도장 템플릿
+│
+├── font-generator/           # AI 폰트 생성기
+│   ├── colab/               # Google Colab 노트북
+│   ├── templates/           # 손글씨 템플릿 (256자)
+│   ├── samples/             # 샘플 글자 세트
+│   └── docs/                # 문서
+│
+├── assets/                   # 공통 자산
+│   ├── fonts/               # 폰트 파일
+│   └── images/              # 이미지 파일
+│
+├── chrome-extension/         # 크롬 확장 프로그램
+│
+└── docs/                     # 전체 문서
 ```
 
-## 설치 및 실행
+---
 
-### 1. 저장소 클론
+## 🔴 도장 생성기 (Stamp Generator)
+
+### 원형 도장
+- 5글자 배치 (상단 2 + 하단 3)
+- 중심선 기준 좌우 대칭
+
+```bash
+cd stamp-generator/circle
+python stamp_generator.py
+```
+
+### 정사각형 도장
+- 6~20글자 지원
+- 자동 행/열 배치
+
+```bash
+cd stamp-generator/square
+python stamp_square.py
+```
+
+---
+
+## 🔤 AI 폰트 생성기 (Font Generator)
+
+### 기능
+- 43~256자 손글씨 샘플로 11,172자 한글 폰트 생성
+- MX-Font (네이버 클로바 AI) 기반
+- Google Colab에서 무료 GPU 사용
+
+### 사용 방법
+
+1. **템플릿 다운로드**
+   - `font-generator/templates/` 에서 256자 템플릿 PDF 다운로드
+
+2. **손글씨 작성**
+   - 템플릿에 맞춰 손글씨 작성
+   - 스캔 또는 촬영
+
+3. **Colab 노트북 실행**
+   - `font-generator/colab/` 의 노트북 열기
+   - 이미지 업로드 → 폰트 생성 → TTF 다운로드
+
+### 샘플 글자 세트
+
+| 세트 | 글자 수 | 용도 |
+|------|--------|------|
+| 8자 | 8 | 빠른 테스트 |
+| 28자 | 28 | 기본 품질 |
+| 43자 | 43 | 좋은 품질 |
+| 256자 | 256 | 최고 품질 |
+
+---
+
+## 🚀 빠른 시작
+
+### 요구사항
+- Python 3.8+
+- Pillow
+- (폰트 생성) Google Colab 또는 GPU
+
+### 설치
 
 ```bash
 git clone https://github.com/MadKangYu/madstamp-automation.git
 cd madstamp-automation
+pip install pillow fonttools
 ```
 
-### 2. 의존성 설치
+---
 
-```bash
-pip install poetry
-poetry install
-```
+## 📄 라이선스
 
-### 3. 환경변수 설정
+MIT License
 
-```bash
-cp .env.example .env
-# .env 파일을 편집하여 API 키 등 설정
-```
+---
 
-### 4. 데이터베이스 마이그레이션
+## 🙏 크레딧
 
-```bash
-# Supabase 대시보드에서 db/schema.sql 실행
-```
-
-### 5. 실행
-
-```bash
-poetry run python -m app.main
-```
-
-## 환경변수
-
-| 변수명 | 설명 |
-|--------|------|
-| `SUPABASE_URL` | Supabase 프로젝트 URL |
-| `SUPABASE_KEY` | Supabase API 키 |
-| `OPENROUTER_API_KEY` | OpenRouter API 키 |
-| `OCR_SPACE_API_KEY` | OCR.space API 키 |
-| `GMAIL_CREDENTIALS` | Gmail 인증 정보 |
-| `TARGET_EMAIL` | 모니터링할 이메일 주소 |
-
-## 라이선스
-
-이 프로젝트는 Madstamp의 독점 소프트웨어입니다.
-
-## 연락처
-
-- **회사**: Madstamp
-- **사업자등록번호**: 880-86-02373
-- **이메일**: goopick@goopick.net
-- **연락처**: +82 10 5911 2822
+- [MX-Font](https://github.com/clovaai/fewshot-font-generation) - 네이버 클로바 AI
+- [DM-Font](https://github.com/clovaai/dmfont) - 네이버 클로바 AI
