@@ -3,10 +3,12 @@
 Madstamp 정사각형 도장 생성기
 =============================
 
-펜툴 방식:
-- 중심선 기준 좌우 대칭 배치
-- 6글자 ~ 20글자 지원
-- 정사각형 테두리
+지원 글자 수: 4~20글자
+- 4글자: 2x2 격자
+- 5글자: 2+3 또는 3+2
+- 6글자: 3+3 또는 2+2+2
+- ...
+- 20글자: 5+5+5+5
 
 배치 규칙:
 - 글자 수에 따라 행/열 자동 결정
@@ -17,6 +19,7 @@ Madstamp 정사각형 도장 생성기
 from PIL import Image, ImageDraw, ImageFont
 import os
 import math
+
 
 class SquareStampGenerator:
     
@@ -33,7 +36,7 @@ class SquareStampGenerator:
         self.stamp_color = (200, 30, 30)
         self.bg_color = (255, 255, 255, 0)
         
-        self.output_dir = '/home/ubuntu/madstamp-automation/chrome-extension/assets/stamps'
+        self.output_dir = './output'
         os.makedirs(self.output_dir, exist_ok=True)
     
     def get_font(self, font_name, font_size):
@@ -51,6 +54,8 @@ class SquareStampGenerator:
         반환: [(row1_count), (row2_count), ...]
         """
         layouts = {
+            4: [2, 2],           # 2+2
+            5: [2, 3],           # 2+3
             6: [3, 3],           # 3+3
             7: [3, 4],           # 3+4
             8: [4, 4],           # 4+4
@@ -174,24 +179,30 @@ class SquareStampGenerator:
 
 def main():
     generator = SquareStampGenerator(size=1024)
+    generator.output_dir = '/home/ubuntu/madstamp-automation/test_output'
+    os.makedirs(generator.output_dir, exist_ok=True)
     
     # 테스트 케이스
     test_cases = [
-        ("매드스탬프야", 6),      # 6글자: 3+3
-        ("대한민국만세요", 7),     # 7글자: 3+4
-        ("행복한우리가족", 7),     # 7글자: 3+4
-        ("사랑해요우리가족", 8),   # 8글자: 4+4
-        ("대한민국화이팅요", 8),   # 8글자: 4+4
-        ("주식회사매드스탬프", 9), # 9글자: 3+3+3
-        ("주식회사매드스탬프야", 10), # 10글자: 3+4+3
-        ("대한민국서울특별시강남", 11), # 11글자
-        ("대한민국서울특별시강남구", 12), # 12글자: 4+4+4
-        ("일이삼사오육칠팔구십일이삼사오육칠팔구십", 20), # 20글자: 5+5+5+5
+        ("합격인", 4, "4글자: 2+2"),
+        ("대한민국만", 5, "5글자: 2+3"),
+        ("매드스탬프야", 6, "6글자: 3+3"),
+        ("대한민국만세요", 7, "7글자: 3+4"),
+        ("사랑해요우리가족", 8, "8글자: 4+4"),
+        ("주식회사매드스탬프", 9, "9글자: 3+3+3"),
+        ("대한민국서울시강남구", 10, "10글자: 3+4+3"),
+        ("대한민국서울특별시강남", 11, "11글자: 3+4+4"),
+        ("대한민국서울특별시강남구", 12, "12글자: 4+4+4"),
+        ("일이삼사오육칠팔구십일이삼사오육", 16, "16글자: 4+4+4+4"),
+        ("일이삼사오육칠팔구십일이삼사오육칠팔구십", 20, "20글자: 5+5+5+5"),
     ]
     
-    for text, expected_count in test_cases:
+    for text, expected_count, desc in test_cases:
         actual_count = len(text)
-        print(f"\n=== {text} ({actual_count}글자) ===")
+        layout = generator.get_layout(actual_count)
+        print(f"\n=== {desc} ===")
+        print(f"텍스트: {text} ({actual_count}글자)")
+        print(f"배치: {'+'.join(map(str, layout))}")
         img = generator.create_stamp(text, 'noto_serif')
         generator.save(img, f"stamp_square_{actual_count}char.png")
     
