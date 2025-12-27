@@ -6,7 +6,7 @@ Madstamp 원형 도장 생성기
 지원 글자 수: 1~5글자
 - 1글자: 양면도장 (중앙 배치, 크게)
 - 2글자: 가로 배치
-- 3글자: 가로형 또는 세로형 선택 가능
+- 3글자: 가로형, 세로형, 이름형(성+이름) 선택 가능
 - 4글자: 2x2 격자
 - 5글자: 상단 2 + 하단 3
 
@@ -54,7 +54,10 @@ class CircleStampGenerator:
         Args:
             text: 도장에 들어갈 텍스트 (1~5글자)
             font_name: 폰트 이름 ('noto_serif' 또는 'noto_sans')
-            layout_3char: 3글자 배치 방식 ('horizontal'=가로, 'vertical'=세로)
+            layout_3char: 3글자 배치 방식
+                - 'horizontal': 가로형 (한 줄에 3글자)
+                - 'vertical': 세로형 (세로로 3글자)
+                - 'name': 이름형 (성 왼쪽 크게, 이름 오른쪽 상/하)
         
         Returns:
             PIL Image 객체
@@ -85,6 +88,8 @@ class CircleStampGenerator:
         elif char_count == 3:
             if layout_3char == 'vertical':
                 self._draw_3char_vertical(draw, chars, inner_radius, font_name)
+            elif layout_3char == 'name':
+                self._draw_3char_name(draw, chars, inner_radius, font_name)
             else:
                 self._draw_3char_horizontal(draw, chars, inner_radius, font_name)
         elif char_count == 4:
@@ -98,7 +103,7 @@ class CircleStampGenerator:
         """
         1글자 배치 (양면도장) - 중앙 배치, 크게
         """
-        # 글자 크기: 원 지름의 85% (더 크게)
+        # 글자 크기: 원 지름의 82%
         char_size = int(radius * 2 * 0.82)
         font_size = int(char_size * 0.95)
         font = self.get_font(font_name, font_size)
@@ -205,6 +210,61 @@ class CircleStampGenerator:
             
             draw.text((draw_x, draw_y), char, font=font, fill=self.stamp_color)
     
+    def _draw_3char_name(self, draw, chars, radius, font_name):
+        """
+        3글자 이름형 배치 - 성(왼쪽 크게) + 이름(오른쪽 상/하)
+        
+        배치:
+              [이름1]
+          [성]
+              [이름2]
+        """
+        # 성(姓) - 왼쪽에 크게
+        surname_size = int(radius * 2 * 0.55)
+        surname_font_size = int(surname_size * 0.95)
+        surname_font = self.get_font(font_name, surname_font_size)
+        
+        # 이름 - 오른쪽에 작게 (상/하)
+        name_size = int(radius * 2 * 0.38)
+        name_font_size = int(name_size * 0.95)
+        name_font = self.get_font(font_name, name_font_size)
+        
+        # 성 위치 (왼쪽 중앙)
+        surname_x = self.cx - radius * 0.28
+        surname_y = self.cy
+        
+        # 이름 위치 (오른쪽 상/하)
+        name_x = self.cx + radius * 0.35
+        name_top_y = self.cy - radius * 0.32
+        name_bottom_y = self.cy + radius * 0.32
+        
+        # 성 그리기
+        surname = chars[0]
+        bbox = draw.textbbox((0, 0), surname, font=surname_font)
+        bbox_cx = (bbox[0] + bbox[2]) / 2
+        bbox_cy = (bbox[1] + bbox[3]) / 2
+        draw_x = surname_x - bbox_cx
+        draw_y = surname_y - bbox_cy
+        draw.text((draw_x, draw_y), surname, font=surname_font, fill=self.stamp_color)
+        
+        # 이름 첫 글자 (오른쪽 상단)
+        name1 = chars[1]
+        bbox = draw.textbbox((0, 0), name1, font=name_font)
+        bbox_cx = (bbox[0] + bbox[2]) / 2
+        bbox_cy = (bbox[1] + bbox[3]) / 2
+        draw_x = name_x - bbox_cx
+        draw_y = name_top_y - bbox_cy
+        draw.text((draw_x, draw_y), name1, font=name_font, fill=self.stamp_color)
+        
+        # 이름 둘째 글자 (오른쪽 하단)
+        name2 = chars[2]
+        bbox = draw.textbbox((0, 0), name2, font=name_font)
+        bbox_cx = (bbox[0] + bbox[2]) / 2
+        bbox_cy = (bbox[1] + bbox[3]) / 2
+        draw_x = name_x - bbox_cx
+        draw_y = name_bottom_y - bbox_cy
+        draw.text((draw_x, draw_y), name2, font=name_font, fill=self.stamp_color)
+    
     def _draw_4char(self, draw, chars, radius, font_name):
         """
         4글자 배치 (2x2)
@@ -307,6 +367,7 @@ def main():
         ("합격", "2글자", {}),
         ("대한민", "3글자 가로형", {'layout_3char': 'horizontal'}),
         ("대한민", "3글자 세로형", {'layout_3char': 'vertical'}),
+        ("김철수", "3글자 이름형", {'layout_3char': 'name'}),
         ("대한민국", "4글자", {}),
         ("매드스탬프", "5글자", {}),
     ]
@@ -320,6 +381,8 @@ def main():
             filename = f"stamp_circle_{len(text)}char_horizontal.png"
         elif '세로' in desc:
             filename = f"stamp_circle_{len(text)}char_vertical.png"
+        elif '이름' in desc:
+            filename = f"stamp_circle_{len(text)}char_name.png"
         else:
             filename = f"stamp_circle_{len(text)}char.png"
         
