@@ -1,0 +1,50 @@
+{
+  "extName": {
+    "message": "Madstamp 도장 자동화",
+    "description": "확장 프로그램 이름"
+  },
+  "extDescription": {
+    "message": "도장 이미지 자동 제작 시스템 - Lovart AI 자동화, Gmail 연동, 주문 관리 대시보드",
+    "description": "확장 프로그램 설명"
+  },
+  "popupTitle": {
+    "message": "Madstamp",
+    "description": "팝업 제목"
+  },
+  "tabDashboard": {
+    "message": "대시보드",
+    "description": "대시보드 탭"
+  },
+  "tabLovart": {
+    "message": "Lovart AI",
+    "description": "Lovart AI 탭"
+  },
+  "tabGmail": {
+    "message": "Gmail",
+    "description": "Gmail 탭"
+  },
+  "tabSettings": {
+    "message": "설정",
+    "description": "설정 탭"
+  },
+  "btnGenerate": {
+    "message": "이미지 생성",
+    "description": "이미지 생성 버튼"
+  },
+  "btnAnalyze": {
+    "message": "분석하기",
+    "description": "분석 버튼"
+  },
+  "statusPending": {
+    "message": "대기 중",
+    "description": "대기 상태"
+  },
+  "statusProcessing": {
+    "message": "처리 중",
+    "description": "처리 중 상태"
+  },
+  "statusCompleted": {
+    "message": "완료",
+    "description": "완료 상태"
+  }
+}

@@ -1,0 +1,252 @@
+/**
+ * Madstamp - Lovart AI 자동화 스타일
+ */
+
+/* 메인 패널 */
+#madstamp-lovart-panel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 320px;
+  background: #1a1a2e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #ffffff;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+#madstamp-lovart-panel.madstamp-panel-minimized {
+  width: 160px;
+}
+
+#madstamp-lovart-panel.madstamp-panel-minimized .madstamp-panel-content {
+  display: none;
+}
+
+/* 헤더 */
+.madstamp-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
+  cursor: move;
+}
+
+.madstamp-logo {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.madstamp-minimize-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.madstamp-minimize-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 컨텐츠 영역 */
+.madstamp-panel-content {
+  padding: 16px;
+}
+
+/* 섹션 */
+.madstamp-section {
+  margin-bottom: 16px;
+}
+
+.madstamp-section label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.madstamp-section select,
+.madstamp-section textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: #16213e;
+  border: 1px solid #2a3f5f;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.madstamp-section select:focus,
+.madstamp-section textarea:focus {
+  outline: none;
+  border-color: #c62828;
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2);
+}
+
+.madstamp-section textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.madstamp-section select option {
+  background: #16213e;
+  color: #fff;
+}
+
+/* 액션 버튼 영역 */
+.madstamp-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.madstamp-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.madstamp-btn-primary {
+  background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
+  color: white;
+}
+
+.madstamp-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.4);
+}
+
+.madstamp-btn-secondary {
+  background: #2a3f5f;
+  color: #fff;
+}
+
+.madstamp-btn-secondary:hover {
+  background: #3a5070;
+}
+
+.madstamp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 상태 표시 */
+.madstamp-status {
+  margin-top: 16px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  text-align: center;
+  background: #16213e;
+  color: #888;
+}
+
+.madstamp-status-processing {
+  background: #1e3a5f;
+  color: #4fc3f7;
+  animation: pulse 1.5s infinite;
+}
+
+.madstamp-status-complete {
+  background: #1b5e20;
+  color: #81c784;
+}
+
+.madstamp-status-error {
+  background: #5d1a1a;
+  color: #ef9a9a;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* 알림 */
+.madstamp-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 9999999;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.madstamp-notification-info {
+  background: #1e3a5f;
+  color: #4fc3f7;
+  border-left: 4px solid #4fc3f7;
+}
+
+.madstamp-notification-success {
+  background: #1b5e20;
+  color: #81c784;
+  border-left: 4px solid #81c784;
+}
+
+.madstamp-notification-warning {
+  background: #5d4037;
+  color: #ffb74d;
+  border-left: 4px solid #ffb74d;
+}
+
+.madstamp-notification-error {
+  background: #5d1a1a;
+  color: #ef9a9a;
+  border-left: 4px solid #ef9a9a;
+}
+
+.madstamp-notification-fade {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "Madstamp 도장 자동화",
+  "version": "1.0.0",
+  "description": "도장 이미지 자동 제작 시스템 - Lovart AI 자동화, Gmail 연동, 주문 관리 대시보드",
+  "default_locale": "ko",
+  
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "notifications",
+    "downloads",
+    "clipboardWrite"
+  ],
+  
+  "host_permissions": [
+    "https://www.lovart.ai/*",
+    "https://mail.google.com/*",
+    "https://gmail.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "src/assets/icons/icon16.png",
+      "32": "src/assets/icons/icon32.png",
+      "48": "src/assets/icons/icon48.png",
+      "128": "src/assets/icons/icon128.png"
+    },
+    "default_title": "Madstamp 도장 자동화"
+  },
+  
+  "icons": {
+    "16": "src/assets/icons/icon16.png",
+    "32": "src/assets/icons/icon32.png",
+    "48": "src/assets/icons/icon48.png",
+    "128": "src/assets/icons/icon128.png"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://www.lovart.ai/*"],
+      "js": ["src/content-scripts/lovart-automator.js"],
+      "css": ["src/content-scripts/lovart-styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://mail.google.com/*", "https://gmail.com/*"],
+      "js": ["src/content-scripts/gmail-integration.js"],
+      "css": ["src/content-scripts/gmail-styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["src/assets/*"],
+      "matches": ["https://www.lovart.ai/*", "https://mail.google.com/*"]
+    }
+  ],
+  
+  "options_page": "src/popup/options.html"
+}

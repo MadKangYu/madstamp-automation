@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400, initial-scale=1.0">
+  <title>Madstamp 도장 자동화</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- 헤더 -->
+    <header class="popup-header">
+      <div class="logo">
+        <span class="logo-icon">🔴</span>
+        <span class="logo-text">Madstamp</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-settings" title="설정">⚙️</button>
+      </div>
+    </header>
+
+    <!-- 탭 네비게이션 -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="dashboard">대시보드</button>
+      <button class="tab-btn" data-tab="lovart">Lovart AI</button>
+      <button class="tab-btn" data-tab="gmail">Gmail</button>
+    </nav>
+
+    <!-- 탭 컨텐츠 -->
+    <main class="tab-content">
+      
+      <!-- 대시보드 탭 -->
+      <section class="tab-panel active" id="tab-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-label">대기 중</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-processing">0</div>
+            <div class="stat-label">처리 중</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-label">완료</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>최근 주문</h3>
+            <button class="text-btn" id="btn-refresh-orders">새로고침</button>
+          </div>
+          <div class="order-list" id="order-list">
+            <div class="empty-state">
+              <span class="empty-icon">📭</span>
+              <p>아직 주문이 없습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="action-btn primary" id="btn-open-gmail">
+            <span class="btn-icon">📧</span>
+            Gmail 열기
+          </button>
+          <button class="action-btn secondary" id="btn-open-lovart">
+            <span class="btn-icon">🎨</span>
+            Lovart AI 열기
+          </button>
+        </div>
+      </section>
+
+      <!-- Lovart AI 탭 -->
+      <section class="tab-panel" id="tab-lovart">
+        <div class="section">
+          <div class="section-header">
+            <h3>빠른 생성</h3>
+          </div>
+          
+          <div class="form-group">
+            <label>도장 스타일</label>
+            <select id="lovart-template">
+              <option value="traditional_korean">한국 전통 도장 (낙관)</option>
+              <option value="modern_logo">현대적 로고 스타일</option>
+              <option value="handwriting_style">손글씨 스타일</option>
+              <option value="company_seal">회사 직인</option>
+              <option value="custom">커스텀 프롬프트</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>추가 설명</label>
+            <textarea id="lovart-details" placeholder="예: 회사명 'GOOPICK', 원형 도장" rows="2"></textarea>
+          </div>
+
+          <div class="form-group" id="custom-prompt-group" style="display: none;">
+            <label>커스텀 프롬프트</label>
+            <textarea id="lovart-custom" placeholder="직접 프롬프트를 입력하세요..." rows="3"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="action-btn secondary" id="btn-copy-prompt">
+              📋 프롬프트 복사
+            </button>
+            <button class="action-btn primary" id="btn-generate-lovart">
+              🚀 Lovart에서 생성
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>Lovart AI 상태</h3>
+          </div>
+          <div class="status-indicator" id="lovart-status">
+            <span class="status-dot"></span>
+            <span class="status-text">연결 확인 중...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gmail 탭 -->
+      <section class="tab-panel" id="tab-gmail">
+        <div class="section">
+          <div class="section-header">
+            <h3>이메일 모니터링</h3>
+          </div>
+          
+          <div class="monitoring-status">
+            <div class="toggle-group">
+              <label class="toggle">
+                <input type="checkbox" id="gmail-monitoring" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <span>자동 감지 활성화</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📬</div>
+            <div class="info-content">
+              <strong>모니터링 이메일</strong>
+              <p id="monitoring-email">goopick@goopick.net</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>감지 키워드</h3>
+          </div>
+          <div class="keyword-list">
+            <span class="keyword">도장</span>
+            <span class="keyword">스탬프</span>
+            <span class="keyword">인장</span>
+            <span class="keyword">직인</span>
+            <span class="keyword">로고</span>
+            <span class="keyword">제작</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="action-btn primary full-width" id="btn-check-gmail">
+            📧 Gmail에서 확인하기
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="popup-footer">
+      <span>Madstamp v1.0.0</span>
+      <span>•</span>
+      <a href="#" id="link-help">도움말</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
